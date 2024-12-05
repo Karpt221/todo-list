@@ -56,7 +56,7 @@ export class ProjectsView {
     // Attach listeners for the ToDo form  
     attachToDoFormListeners() {
         this.todoForm.addEventListener('submit', () => {
-            const allProjectsList = this.projectsController.mergeProjects();
+            const allProjectsList = this.projectsController.projectsList;
             const project_id = this.modalTodoProject.value;
             const project = allProjectsList.find(project => project.id === project_id);
 
@@ -91,7 +91,7 @@ export class ProjectsView {
     attachToDoModalListeners() {
         this.openToDoModalBtn.addEventListener('click', () => {
             this.modalTodoProject.innerHTML = '';
-            const allProjectsList = this.projectsController.mergeProjects();
+            const allProjectsList = this.projectsController.projectsList;
 
             allProjectsList.forEach((project) => {
                 const projectOption = document.createElement('option');
@@ -139,10 +139,12 @@ export class ProjectsView {
     // Render projects  
     renderProjects() {
         this.customProjects.innerHTML = '';
-        this.projectsController.customProjectsList.forEach((project) => {
-            this.customProjects.insertAdjacentHTML('beforeend',
-                `<li><button data-project-id="${project.id}" class="btn project" type="button">  
-                    <img class="icon" src="${poundIcon}" alt="">${project.title}</button></li>`);
+        this.projectsController.projectsList.forEach((project) => {
+            if(!project.isDefault){
+                this.customProjects.insertAdjacentHTML('beforeend',
+                    `<li><button data-project-id="${project.id}" class="btn project" type="button">  
+                        <img class="icon" src="${poundIcon}" alt="">${project.title}</button></li>`);
+            }
         });
         this.attachProjectClickListeners(); // Reattach listeners after rendering  
     }
@@ -152,7 +154,7 @@ export class ProjectsView {
         this.mainProjectTitle.innerHTML = '';
         this.projectTodos.innerHTML = '';
 
-        const allProjectsList = this.projectsController.mergeProjects();
+        const allProjectsList = this.projectsController.projectsList;
         const project = allProjectsList.find(project => project.id === project_id);
 
         this.mainProjectTitle.textContent = project.title;
