@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Todo list</title>
+</head>
+
+<body>
+    <aside class="sidebar">
+        <ul class="default-projects">
+            <li>
+                <button data-project-id="inbox" class="btn project" type="button">
+                    <img class="icon" src="./assets/inbox-full.svg" alt="">Inbox
+                </button>
+            </li>
+        </ul>
+        <button class="btn add-project-btn" type="button">
+            <img class="icon" src="./assets/plus.svg" alt="">Add Project
+        </button>
+        <ul class="custom-projects">
+        </ul>
+    </aside>
+
+    <main class="main-section">
+        <h2 class="main-project-title">Inbox</h2>
+        <button class="btn open-todo-modal-btn" type="button">
+            <img class="icon" src="./assets/plus.svg" alt="">Add Task
+        </button>
+        <ul class="project-todos">
+        </ul>
+    </main>
+
+    <dialog class="add-todo-modal">
+        <form method="dialog" class="add-item-form todo-form" action="">
+            <div>
+                <button class="close-add-form close-todo-modal-btn" type="button"><img src="./assets/close.svg"
+                        alt=""></button>
+                <h4>Write todo info</h4>
+            </div>
+            <label for="modal-todo-title">Title:
+                <input required type="text" name="modal-todo-title" id="modal-todo-title"></label>
+            <label for="modal-todo-description">Description:
+                <textarea required name="modal-todo-description" id="modal-todo-description" cols="40"
+                    rows="5"></textarea></label>
+            <label for="modal-todo-dueDate">Due date:
+                <input required type="datetime-local" name="modal-todo-dueDate" id="modal-todo-dueDate"></label>
+            <label for="modal-todo-priority">Priority:
+                <select name="modal-todo-priority" id="modal-todo-priority">
+                    <option value="HIGH">HIGH</option>
+                    <option value="MEDIUM">MEDIUM</option>
+                    <option selected value="LOW">LOW</option>
+                </select></label>
+            <label for="modal-todo-project">Project:
+                <select required name="modal-todo-project" id="modal-todo-project">
+                </select></label>
+            <button type="submit">Add todo</button>
+        </form>
+    </dialog>
+
+
+    <dialog class="add-project-modal">
+        <form method="dialog" class="add-item-form project-form" action="">
+            <div>
+                <button class="close-add-form close-project-modal-btn" type="button"><img src="./assets/close.svg"
+                        alt=""></button>
+                <h4>Write project info</h4>
+            </div>
+            <label for="modal-project-title">Title:
+                <input required type="text" name="modal-project-title" id="modal-project-title"></label>
+            <button type="submit">Add project</button>
+        </form>
+    </dialog>
+</body>
+
+</html>

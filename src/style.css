@@ -1,0 +1,129 @@
+@import url(reset.css);
+
+body {
+    height: 100vh;
+    display: grid;
+    grid-template-columns: 1fr 3fr;
+    font-size: 18px;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+ul {
+    list-style: none;
+}
+
+.btn {
+    width: 100%;
+    border: none;
+    background: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+}
+
+.icon {
+    width: 30px;
+}
+
+.btn:hover:not(.todo) {
+    background-color: darkgray;
+}
+
+
+.sidebar {
+    background-color: rgb(219, 219, 219);
+    padding: 20px;
+
+    & li {
+        padding: 3px 0;
+    }
+
+    & ul {
+        margin-bottom: 20px;
+    }
+
+    & .icon{
+        margin: 0 5px; 
+    }
+
+}
+
+.main-section {
+    padding: 40px;
+
+    & .main-project-title {
+        font-size: 1.5rem;
+        font-weight: bold;
+        margin: 20px 0;
+    }
+}
+button{
+    border-radius: 5px;
+}
+.todo {
+    display: flex;
+    margin: 5px 0;
+    & .control-btns {
+        display: flex;
+        align-items: center;
+        & button {
+            border: none;
+            background: none;
+            cursor: pointer;
+            height: fit-content;
+            width: fit-content;
+        }
+        & button:hover{
+            background-color: darkgray;
+        }
+    }
+    & .todo-info{
+        text-align: start;
+    }
+    & .todo-checkbox{
+        margin: 0 20px;
+    }
+}
+
+::backdrop {
+    backdrop-filter: blur(2px);
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.add-item-form {
+    display: flex;
+    flex-direction: column;
+    row-gap: 10px;
+
+    & div {
+        display: grid;
+
+        & h4 {
+            justify-self: center;
+        }
+
+        & button {
+            justify-self: flex-end;
+            border: none;
+            background: none;
+            cursor: pointer;
+
+            & img {
+                width: 20px;
+            }
+        }
+    }
+
+    & input:not(input[type='checkbox']) {
+        width: 100%;
+    }
+
+    & button[type='submit'] {
+        align-self: center;
+    }
+
+    & #modal-todo-description {
+        resize: none;
+        display: block;
+    }
+}
