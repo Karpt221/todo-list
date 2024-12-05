@@ -48,31 +48,19 @@ export class ProjectsView {
 
     // Grouped event listener initialization  
     initializeEventListeners() {
-        this.attachToDoFormListeners();
         this.attachProjectModalListeners();
         this.attachToDoModalListeners();
     }
 
-    // Attach listeners for the ToDo form  
-    attachToDoFormListeners() {
-        this.todoForm.addEventListener('submit', () => {
-            const project_id = this.modalTodoProject.value;
-            const project = this.projectsController.getProjectById(project_id);
 
-            project.createToDo(
-                this.modalTodoTitle.value,
-                this.modalTodoDescription.value,
-                this.modalTodoDueDate.value,
-                this.modalTodoPriority.value,
-                project.id,
-                project.title
-            );
-            this.renderToDos(project.id);
-        });
-    }
 
     // Attach listeners for the project modal  
     attachProjectModalListeners() {
+        this.projectForm.addEventListener('submit', () => {
+            this.projectsController.createProject(this.modalProjectTitle.value);
+            this.renderProjects()
+        });
+
         this.openProjectModalBtn.addEventListener('click', () => {
             this.projectDialog.showModal();
         });
@@ -88,6 +76,21 @@ export class ProjectsView {
 
     // Attach listeners for the ToDo modal  
     attachToDoModalListeners() {
+        this.todoForm.addEventListener('submit', () => {
+            const project_id = this.modalTodoProject.value;
+            const project = this.projectsController.getProjectById(project_id);
+
+            project.createToDo(
+                this.modalTodoTitle.value,
+                this.modalTodoDescription.value,
+                this.modalTodoDueDate.value,
+                this.modalTodoPriority.value,
+                project.id,
+                project.title
+            );
+            this.renderToDos(project.id);
+        });
+
         this.openToDoModalBtn.addEventListener('click', () => {
             this.modalTodoProject.innerHTML = '';
             const allProjectsList = this.projectsController.projectsList;
