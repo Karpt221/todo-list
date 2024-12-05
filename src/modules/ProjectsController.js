@@ -1,38 +1,53 @@
-import { Project } from "./Project.js";
+import { Project } from "./Project.js";  
 
-export class ProjectsController {
-    static #instance;
+export class ProjectsController {  
+    static #instance;  
 
-    #projectsList = [];
+    #projectsMap = new Map();  
 
-    constructor(defaultProjects) {
-        if (ProjectsController.#instance) {
-            throw new Error("ProjectsController instance already exists! Use ProjectsController.getInstance().");
-        }
-        this.#projectsList = defaultProjects;
-        this.createProject('Project 1');
-        ProjectsController.#instance = this;
-    }
+    constructor(defaultProjects) {  
+        if (ProjectsController.#instance) {  
+            throw new Error("ProjectsController instance already exists! Use ProjectsController.getInstance().");  
+        }  
 
-    static getInstance() {
-        if (!ProjectsController.#instance) {
-            ProjectsController.#instance = new ProjectsController([new Project('Inbox', 'inbox', true)]);
-        }
-        return ProjectsController.#instance;
-    }
+        // Initialize the Map with default projects  
+        defaultProjects.forEach(project => this.#projectsMap.set(project.id, project));  
+        this.createProject('Project 1');  
+        ProjectsController.#instance = this;  
+    }  
 
-    createProject(project_title) {
-        this.#projectsList.push(new Project(project_title));
-    }
-    editProject(project_idx, project_title) {
-        Object.assign(this.#projectsList[project_idx], project_title)
-    }
-    deleteProject(project_idx) {
-        this.#projectsList.splice(project_idx, 1);
-    }
+    static getInstance() {  
+        if (!ProjectsController.#instance) {  
+            ProjectsController.#instance = new ProjectsController([new Project('Inbox', 'inbox', true)]);  
+        }  
+        return ProjectsController.#instance;  
+    }  
 
-    get projectsList() {
-        return Object.freeze([...this.#projectsList]);
-    }
+    createProject(project_title) {  
+        const newProject = new Project(project_title);  
+        this.#projectsMap.set(newProject.id, newProject);  
+    }  
 
+    editProject(project_id, updatedProjectData) {  
+        const project = this.#projectsMap.get(project_id);  
+        if (project) {  
+            Object.assign(project, updatedProjectData);  
+        } else {  
+            throw new Error(`Project with ID ${project_id} not found.`);  
+        }  
+    }  
+
+    deleteProject(project_id) {  
+        if (!this.#projectsMap.delete(project_id)) {  
+            throw new Error(`Project with ID ${project_id} not found.`);  
+        }  
+    }  
+
+    get projectsList() {  
+        return Object.freeze([...this.#projectsMap.values()]);  
+    }  
+
+    getProjectById(project_id) {  
+        return this.#projectsMap.get(project_id);  
+    }  
 }

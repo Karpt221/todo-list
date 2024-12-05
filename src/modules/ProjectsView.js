@@ -56,9 +56,8 @@ export class ProjectsView {
     // Attach listeners for the ToDo form  
     attachToDoFormListeners() {
         this.todoForm.addEventListener('submit', () => {
-            const allProjectsList = this.projectsController.projectsList;
             const project_id = this.modalTodoProject.value;
-            const project = allProjectsList.find(project => project.id === project_id);
+            const project = this.projectsController.getProjectById(project_id);
 
             project.createToDo(
                 this.modalTodoTitle.value,
@@ -140,7 +139,7 @@ export class ProjectsView {
     renderProjects() {
         this.customProjects.innerHTML = '';
         this.projectsController.projectsList.forEach((project) => {
-            if(!project.isDefault){
+            if (!project.isDefault) {
                 this.customProjects.insertAdjacentHTML('beforeend',
                     `<li><button data-project-id="${project.id}" class="btn project" type="button">  
                         <img class="icon" src="${poundIcon}" alt="">${project.title}</button></li>`);
@@ -154,8 +153,7 @@ export class ProjectsView {
         this.mainProjectTitle.innerHTML = '';
         this.projectTodos.innerHTML = '';
 
-        const allProjectsList = this.projectsController.projectsList;
-        const project = allProjectsList.find(project => project.id === project_id);
+        const project = this.projectsController.getProjectById(project_id);
 
         this.mainProjectTitle.textContent = project.title;
         this.mainProjectTitle.setAttribute('data-project-id', project.id);
