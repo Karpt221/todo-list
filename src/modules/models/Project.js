@@ -10,8 +10,8 @@ export class Project {
         this.isDefault = isDefault;
     }
 
-    createToDo(title, description, dueDate, priority, project_id = this.id, project_title = this.title) {
-        const todo = new ToDo(project_id, project_title, title, description, dueDate, priority);
+    createToDo(title, description, dueDate, priority, project_id = this.id, project_title = this.title, completed = false) {
+        const todo = new ToDo(project_id, project_title, title, description, dueDate, priority, completed);
         this.#toDoMap.set(todo.id, todo);
     }
 

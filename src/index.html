@@ -32,8 +32,8 @@
         </ul>
     </main>
 
-    <dialog class="add-todo-modal">
-        <form method="dialog" class="add-item-form todo-form" action="">
+    <dialog class="todo-modal">
+        <form data-action-type="" method="dialog" class="add-item-form todo-form" action="">
             <div>
                 <button class="close-add-form close-todo-modal-btn" type="button"><img src="./assets/close.svg"
                         alt=""></button>
@@ -55,13 +55,13 @@
             <label for="modal-todo-project">Project:
                 <select required name="modal-todo-project" id="modal-todo-project">
                 </select></label>
-            <button type="submit">Add todo</button>
+            <button class="todo-form-submit" type="submit"></button>
         </form>
     </dialog>
 
 
-    <dialog class="add-project-modal">
-        <form method="dialog" class="add-item-form project-form" action="">
+    <dialog class="project-modal">
+        <form data-action-type="" method="dialog" class="add-item-form project-form" action="">
             <div>
                 <button class="close-add-form close-project-modal-btn" type="button"><img src="./assets/close.svg"
                         alt=""></button>
@@ -69,7 +69,7 @@
             </div>
             <label for="modal-project-title">Title:
                 <input required type="text" name="modal-project-title" id="modal-project-title"></label>
-            <button type="submit">Add project</button>
+            <button class="project-form-submit" type="submit"></button>
         </form>
     </dialog>
 

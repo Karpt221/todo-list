@@ -12,7 +12,16 @@ export class ProjectsController {
 
         // Initialize the Map with default projects  
         defaultProjects.forEach(project => this.#projectsMap.set(project.id, project));  
+        const inbox = this.getProjectById('inbox')
+        inbox.createToDo( 
+            'Title',
+            'Description',
+            '2024-12-07T14:30',
+            'HIGH',
+            inbox.id,
+            inbox.title);
         this.createProject('Project 1');  
+        
         ProjectsController.#instance = this;  
     }  
 
@@ -28,10 +37,10 @@ export class ProjectsController {
         this.#projectsMap.set(newProject.id, newProject);  
     }  
 
-    editProject(project_id, updatedProjectData) {  
+    editProject(project_id, project_data_obj) {  
         const project = this.#projectsMap.get(project_id);  
         if (project) {  
-            Object.assign(project, updatedProjectData);  
+            Object.assign(project, project_data_obj);  
         } else {  
             throw new Error(`Project with ID ${project_id} not found.`);  
         }  

@@ -51,7 +51,7 @@ export const generateToDo = (todo, todosList) => {
 
     // Create the edit button  
     const editButton = document.createElement('button');
-    editButton.classList.add('edit-todo-btn');
+    editButton.classList.add('edit-btn');
     editButton.type = 'button';
     const editIconImg = document.createElement('img');
     editIconImg.classList.add('icon');
