@@ -8,6 +8,12 @@ body {
     font-family: Arial, Helvetica, sans-serif;
 }
 
+.completed-todo{
+    text-decoration:line-through;
+    color: grey;
+    accent-color: grey;
+}
+
 ul {
     list-style: none;
 }
@@ -25,12 +31,13 @@ ul {
     width: 30px;
 }
 
-.btn:hover:not(.todo) {
+.btn:hover:not(.details-btn) {
     background-color: darkgray;
 }
 
 
 .sidebar {
+    
     background-color: rgb(219, 219, 219);
     padding: 20px;
 
@@ -42,9 +49,6 @@ ul {
         margin-bottom: 20px;
     }
 
-    & .icon{
-        margin: 0 5px; 
-    }
 
 }
 
@@ -57,31 +61,43 @@ ul {
         margin: 20px 0;
     }
 }
-button{
+
+button {
     border-radius: 5px;
 }
+
+.control-btns {
+    display: flex;
+    align-items: center;
+
+    & button {
+        border: none;
+        background: none;
+        cursor: pointer;
+        height: fit-content;
+        width: fit-content;
+    }
+
+    & button:hover {
+        background-color: darkgray;
+    }
+}
+
+.custom-projects li {
+    display: flex;
+}
+
 .todo {
     display: flex;
     margin: 5px 0;
-    & .control-btns {
-        display: flex;
-        align-items: center;
-        & button {
-            border: none;
-            background: none;
-            cursor: pointer;
-            height: fit-content;
-            width: fit-content;
-        }
-        & button:hover{
-            background-color: darkgray;
-        }
-    }
-    & .todo-info{
+
+    & .todo-info {
         text-align: start;
     }
-    & .todo-checkbox{
-        margin: 0 20px;
+
+    & .todo-checkbox {
+        width: 25px;
+        cursor: pointer;
     }
 }
 
@@ -89,6 +105,26 @@ button{
     backdrop-filter: blur(2px);
     background-color: rgba(255, 255, 255, 0.1);
 }
+
+.details-head {
+    display: grid;
+
+    & h4 {
+        justify-self: center;
+    }
+
+    & button {
+        justify-self: flex-end;
+        border: none;
+        background: none;
+        cursor: pointer;
+
+        & img {
+            width: 20px;
+        }
+    }
+}
+
 
 .add-item-form {
     display: flex;

@@ -23,5 +23,9 @@ export class ToDo {
     switchCompleteStatus() {
         this.completed = this.completed === true ? false : true;
     }
+
+    getCompleteStatus(){
+        return this.completed;
+    }
 }
 

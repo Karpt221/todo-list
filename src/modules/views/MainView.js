@@ -1,6 +1,5 @@
-import poundIcon from '../assets/pound.svg';
-import editIcon from '../assets/square-edit-outline.svg';
-import deleteIcon from '../assets/delete-outline.svg';
+import { generateToDo } from "./TodoView.js";
+import { generateProject } from "./ProjectView.js";
 
 export class ProjectsView {
     static #instance = null;
@@ -10,6 +9,15 @@ export class ProjectsView {
             throw new Error("ProjectsView instance already exists! Use ProjectsView.getInstance().");
         }
         this.projectsController = projectsController;
+
+        //ToDo details modal elements
+        this.todoDetailsDialog = document.querySelector(".todo-details-modal");
+        this.closeToDoDetailsBtn = document.querySelector(".close-todo-details-btn");
+        this.todoDetailsTitle = document.querySelector(".todo-details-title");
+        this.todoDetailsDuration = document.querySelector(".todo-details-description");
+        this.todoDetailsDueDate = document.querySelector(".todo-details-duedate");
+        this.todoDetailsPriority = document.querySelector(".todo-details-priority");
+        this.todoDetailsProject = document.querySelector(".todo-details-project");
 
         // ToDo Modal elements  
         this.todoDialog = document.querySelector(".add-todo-modal");
@@ -28,10 +36,10 @@ export class ProjectsView {
         this.modalProjectTitle = document.querySelector("#modal-project-title");
 
         // Project and ToDo elements  
+        this.sideBar = document.querySelector('.sidebar');
         this.customProjects = document.querySelector('.custom-projects');
         this.projectTodos = document.querySelector('.project-todos');
         this.mainProjectTitle = document.querySelector('.main-project-title');
-        this.deleteTodoBtns = document.querySelectorAll('.delete-todo-btn');
 
         // Forms  
         this.todoForm = document.querySelector('.todo-form');
@@ -50,8 +58,40 @@ export class ProjectsView {
     initializeEventListeners() {
         this.attachProjectModalListeners();
         this.attachToDoModalListeners();
+        this.attachToDoDetailsModalListeners();
+        this.attachToDoListeners();
+        this.attachProjectListeners();
     }
 
+    // Attach listeners for the todo details modal  
+    attachToDoDetailsModalListeners() {
+
+        this.projectTodos.addEventListener('click', (event) => {
+            if (event.target.closest('.details-btn')) {
+                const todoLi = event.target.closest('.todo');
+                const todotId = todoLi.dataset.todoId;
+                const projectId = todoLi.dataset.projectId;
+                const todo = this.projectsController.getProjectById(projectId).getToDoById(todotId);
+                this.todoDetailsTitle.textContent = todo.title;
+                this.todoDetailsDuration.textContent = todo.description;
+                this.todoDetailsDueDate.textContent = todo.dueDate;
+                this.todoDetailsPriority.textContent = todo.priority;
+                this.todoDetailsProject.textContent = todo.project_title;
+                this.todoDetailsDialog.showModal();
+            }
+        });
+        this.closeToDoDetailsBtn.addEventListener('click', () => {
+            this.todoDetailsDialog.close();
+        });
+
+        this.todoDetailsDialog.addEventListener("close", () => {
+            this.todoDetailsTitle.textContent = "";
+            this.todoDetailsDuration.textContent = "";
+            this.todoDetailsDueDate.textContent = "";
+            this.todoDetailsPriority.textContent = "";
+            this.todoDetailsProject.textContent = "";
+        });
+    }
 
 
     // Attach listeners for the project modal  
@@ -115,26 +155,53 @@ export class ProjectsView {
             this.modalTodoTitle.value = "";
             this.modalTodoDescription.value = "";
             this.modalTodoDueDate.value = "";
-            this.modalTodoPriority.value = "";
+            this.modalTodoPriority.value = "LOW";
         });
     }
 
-    // Attach listeners for project clicks  
-    attachProjectClickListeners() {
-        document.querySelectorAll('.project').forEach((project) => {
-            project.addEventListener("click", (event) => {
-                const projectId = event.target.dataset.projectId;
-                this.renderToDos(projectId);
-            });
+    // Attach listeners for projects actions  
+    attachProjectListeners() {
+        this.sideBar.addEventListener('click', (event) => {
+            if (event.target.closest('.project-btn')) {
+                const projectId = event.target.closest('.project').dataset.projectId;
+                if (projectId !== this.mainProjectTitle.dataset.projectId) {
+                    this.renderToDos(projectId);
+                }
+            } 
+            else if (event.target.closest('.delete-btn')) {
+                const projectId = event.target.closest('.project').dataset.projectId;
+                this.projectsController.deleteProject(projectId);
+                this.renderProjects();
+                if (projectId === this.mainProjectTitle.dataset.projectId) {
+                    this.renderToDos('inbox');
+                }
+            }
         });
+
     }
 
     // Attach listeners for ToDo actions (delete, edit, etc.)  
     attachToDoListeners() {
-        this.deleteTodoBtns.forEach((btn) => {
-            btn.addEventListener('click', () => {
-                // Add delete functionality here  
-            });
+        this.projectTodos.addEventListener('click', (event) => {
+            if (event.target.closest('.delete-btn')) {
+                const todoLi = event.target.closest('.todo');
+                const projectId = todoLi.dataset.projectId;
+                const todoId = todoLi.dataset.todoId;
+                this.projectsController.getProjectById(projectId).deleteToDo(todoId);
+                this.renderToDos(projectId);
+            } 
+            else if (event.target.closest('.todo-checkbox')) {
+                const todoLi = event.target.closest('.todo');
+                const projectId = todoLi.dataset.projectId;
+                const todoId = todoLi.dataset.todoId;
+                const project = this.projectsController.getProjectById(projectId);
+                project.switchToDoStatus(todoId);
+                const todoInfo = todoLi.querySelector('.todo-info');
+                const checkBox = event.target.closest('.todo-checkbox');
+                todoInfo.classList.toggle('completed-todo');
+                checkBox.classList.toggle('completed-todo');
+            }
+
         });
     }
 
@@ -143,12 +210,10 @@ export class ProjectsView {
         this.customProjects.innerHTML = '';
         this.projectsController.projectsList.forEach((project) => {
             if (!project.isDefault) {
-                this.customProjects.insertAdjacentHTML('beforeend',
-                    `<li><button data-project-id="${project.id}" class="btn project" type="button">  
-                        <img class="icon" src="${poundIcon}" alt="">${project.title}</button></li>`);
+                generateProject(project, this.customProjects);
             }
         });
-        this.attachProjectClickListeners(); // Reattach listeners after rendering  
+
     }
 
     // Render ToDos  
@@ -162,22 +227,7 @@ export class ProjectsView {
         this.mainProjectTitle.setAttribute('data-project-id', project.id);
 
         project.toDoList.forEach((todo) => {
-            this.projectTodos.insertAdjacentHTML('beforeend', `  
-                <li class="todo">  
-                    <button data-project-id="${todo.id}" class="todo btn" type="button">  
-                        <input data-project-id="${todo.id}" class="todo-checkbox" type="checkbox" name="todo-checkbox">  
-                        <div class="todo-info">  
-                            <div class="todo-title">${todo.title}</div>  
-                            <div class="todo-date">${todo.dueDate}</div>  
-                            <div class="todo-project">${todo.project_title}</div>  
-                        </div>  
-                    </button>  
-                    <div class="control-btns">  
-                        <button class='edit-todo-btn' data-project-id="${todo.id}" type="button"><img class="icon" src="${editIcon}" alt=""></button>  
-                        <button class='delete-todo-btn' data-project-id="${todo.id}" type="button"><img class="icon" src="${deleteIcon}" alt=""></button>  
-                    </div>  
-                </li>`);
+            generateToDo(todo, this.projectTodos);
         });
-        this.attachToDoListeners(); // Reattach listeners after rendering  
     }
 }

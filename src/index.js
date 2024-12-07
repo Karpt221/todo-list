@@ -1,6 +1,6 @@
 import "./style.css";
-import { ProjectsController } from "./modules/ProjectsController.js";
-import { ProjectsView } from "./modules/ProjectsView.js";
+import { ProjectsController } from "./modules/models/ProjectsController.js";
+import { ProjectsView } from "./modules/views/MainView.js";
 
 const projects =  ProjectsController.getInstance();
 

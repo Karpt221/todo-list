@@ -10,8 +10,8 @@
 <body>
     <aside class="sidebar">
         <ul class="default-projects">
-            <li>
-                <button data-project-id="inbox" class="btn project" type="button">
+            <li data-project-id="inbox" class="project">
+                <button class="btn project-btn" type="button">
                     <img class="icon" src="./assets/inbox-full.svg" alt="">Inbox
                 </button>
             </li>
@@ -47,7 +47,7 @@
             <label for="modal-todo-dueDate">Due date:
                 <input required type="datetime-local" name="modal-todo-dueDate" id="modal-todo-dueDate"></label>
             <label for="modal-todo-priority">Priority:
-                <select name="modal-todo-priority" id="modal-todo-priority">
+                <select required name="modal-todo-priority" id="modal-todo-priority">
                     <option value="HIGH">HIGH</option>
                     <option value="MEDIUM">MEDIUM</option>
                     <option selected value="LOW">LOW</option>
@@ -71,6 +71,21 @@
                 <input required type="text" name="modal-project-title" id="modal-project-title"></label>
             <button type="submit">Add project</button>
         </form>
+    </dialog>
+
+    <dialog class="todo-details-modal">
+        <div class="details-head">
+            <button class="close-todo-details-btn" type="button"><img src="./assets/close.svg"
+                    alt=""></button>
+            <h4>ToDo details</h4>
+        </div>
+        <div class="todo-details">
+            <div>Title: <span class="todo-details-title"></span></div>
+            <div>Description: <p class="todo-details-description"></p></div>
+            <div>Due date: <span class="todo-details-duedate"></span></div>
+            <div>Priority: <span class="todo-details-priority"></span></div>
+            <div>Project: <span class="todo-details-project"></span></div>
+        </div>
     </dialog>
 </body>
 
