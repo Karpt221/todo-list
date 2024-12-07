@@ -27,5 +27,32 @@ export class ToDo {
     getCompleteStatus(){
         return this.completed;
     }
+
+    toJSON() {  
+        return {  
+            id: this.id,  
+            title: this.title,  
+            description: this.description,  
+            dueDate: this.dueDate,  
+            priority: this.priority,  
+            project_id: this.project_id,  
+            project_title: this.project_title,  
+            completed: this.completed,  
+        };  
+    }  
+
+    static fromJSON(data) {  
+        const todo = new ToDo( 
+            data.project_id,  
+            data.project_title,   
+            data.title,  
+            data.description,  
+            data.dueDate,  
+            data.priority,  
+            data.completed  
+        );  
+        todo.id = data.id;
+        return todo;  
+    }  
 }
 

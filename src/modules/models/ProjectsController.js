@@ -1,62 +1,86 @@
-import { Project } from "./Project.js";  
+import { Project } from "./Project.js";
+import { v4 as uuidv4 } from 'uuid';
 
-export class ProjectsController {  
-    static #instance;  
+export class ProjectsController {
+    static #instance;
 
-    #projectsMap = new Map();  
+    #projectsMap = new Map();
 
-    constructor(defaultProjects) {  
-        if (ProjectsController.#instance) {  
-            throw new Error("ProjectsController instance already exists! Use ProjectsController.getInstance().");  
-        }  
+    constructor(storedProjects) {
+        if (ProjectsController.#instance) {
+            throw new Error("ProjectsController instance already exists! Use ProjectsController.getInstance().");
+        }
 
-        // Initialize the Map with default projects  
-        defaultProjects.forEach(project => this.#projectsMap.set(project.id, project));  
-        const inbox = this.getProjectById('inbox')
-        inbox.createToDo( 
-            'Title',
-            'Description',
-            '2024-12-07T14:30',
-            'HIGH',
-            inbox.id,
-            inbox.title);
-        this.createProject('Project 1');  
-        
-        ProjectsController.#instance = this;  
-    }  
+        storedProjects.forEach(project => this.#projectsMap.set(project.id, project));
 
-    static getInstance() {  
-        if (!ProjectsController.#instance) {  
-            ProjectsController.#instance = new ProjectsController([new Project('Inbox', 'inbox', true)]);  
-        }  
-        return ProjectsController.#instance;  
-    }  
+        ProjectsController.#instance = this;
+    }
 
-    createProject(project_title) {  
-        const newProject = new Project(project_title);  
-        this.#projectsMap.set(newProject.id, newProject);  
-    }  
+    static getInstance() {
+        if (!ProjectsController.#instance) {
+            // Create the controller instance first  
+            const controller = new ProjectsController([]);
+            // Create the default "Inbox" project and set the controller  
+            const inboxProject = new Project('Inbox', 'inbox', true, controller);
+            controller.#projectsMap.set(inboxProject.id, inboxProject);
+            ProjectsController.#instance = controller;
+        }
+        return ProjectsController.#instance;
+    }
 
-    editProject(project_id, project_data_obj) {  
-        const project = this.#projectsMap.get(project_id);  
-        if (project) {  
-            Object.assign(project, project_data_obj);  
-        } else {  
-            throw new Error(`Project with ID ${project_id} not found.`);  
-        }  
-    }  
+    createProject(project_title) {
+        const newProject = new Project(project_title, uuidv4(), false, this);
+        this.#projectsMap.set(newProject.id, newProject);
+        this.saveToLocalStorage();
+    }
 
-    deleteProject(project_id) {  
-        if (!this.#projectsMap.delete(project_id)) {  
-            throw new Error(`Project with ID ${project_id} not found.`);  
-        }  
-    }  
+    editProject(project_id, project_data_obj) {
+        const project = this.#projectsMap.get(project_id);
+        if (project) {
+            Object.assign(project, project_data_obj);
+            this.saveToLocalStorage();
+        } else {
+            throw new Error(`Project with ID ${project_id} not found.`);
+        }
+    }
 
-    get projectsList() {  
-        return Object.freeze([...this.#projectsMap.values()]);  
-    }  
+    deleteProject(project_id) {
+        if (!this.#projectsMap.delete(project_id)) {
+            throw new Error(`Project with ID ${project_id} not found.`);
+        }
+        this.saveToLocalStorage();
+    }
 
-    getProjectById(project_id) {  
-        return this.#projectsMap.get(project_id);  
-    }  
+    get projectsList() {
+        return Object.freeze([...this.#projectsMap.values()]);
+    }
+
+    getProjectById(project_id) {
+        return this.#projectsMap.get(project_id);
+    }
+
+    toJSON() {
+        return JSON.stringify({
+            projects: [...this.#projectsMap.values()],
+        });
+    }
+
+    static fromJSON(jsonString) {
+        const data = JSON.parse(jsonString);
+        const storedProjects = data.projects.map(projectData => Project.fromJSON(projectData));
+        const controller = new ProjectsController(storedProjects);
+
+        // Set the controller for each project  
+        storedProjects.forEach(project => {
+            project.setController(controller);
+        });
+
+        return controller;
+
+    }
+
+    saveToLocalStorage() {
+        localStorage.setItem('projectsController', this.toJSON());
+    }
+
 }

@@ -2,9 +2,19 @@ import "./style.css";
 import { ProjectsController } from "./modules/models/ProjectsController.js";
 import { ProjectsView } from "./modules/views/MainView.js";
 
-const projects =  ProjectsController.getInstance();
+//const projectsController =  ProjectsController.getInstance();
 
-const projectsView =  ProjectsView.getInstance(projects);
+let projectsController;  
+
+const savedController = localStorage.getItem('projectsController');  
+if (savedController) {  
+    projectsController = ProjectsController.fromJSON(savedController);  
+} else {  
+    projectsController = ProjectsController.getInstance();  
+}  
+
+
+const projectsView =  ProjectsView.getInstance(projectsController);
 
 projectsView.initializeEventListeners();
 

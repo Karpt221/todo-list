@@ -36,6 +36,7 @@ export class ProjectsView {
         this.modalProjectTitle = document.querySelector("#modal-project-title");
 
         // Project and ToDo elements  
+        this.sidebar = document.querySelector('.sidebar');
         this.customProjects = document.querySelector('.custom-projects');
         this.projectTodos = document.querySelector('.project-todos');
         this.mainProjectTitle = document.querySelector('.main-project-title');
@@ -183,14 +184,15 @@ export class ProjectsView {
 
     // Attach listeners for projects actions  
     attachProjectListeners() {
-        this.customProjects.addEventListener('click', (event) => {
-            const projectId = event.target.closest('.project').dataset.projectId;
+        this.sidebar.addEventListener('click', (event) => {
             if (event.target.closest('.project-btn')) {
+                const projectId = event.target.closest('.project').dataset.projectId;
                 if (projectId !== this.mainProjectTitle.dataset.projectId) {
                     this.renderToDos(projectId);
                 }
             }
             else if (event.target.closest('.delete-btn')) {
+                const projectId = event.target.closest('.project').dataset.projectId;
                 this.projectsController.deleteProject(projectId);
                 this.renderProjects();
                 if (projectId === this.mainProjectTitle.dataset.projectId) {
@@ -198,6 +200,7 @@ export class ProjectsView {
                 }
             }
             else if (event.target.closest('.edit-btn')) {
+                const projectId = event.target.closest('.project').dataset.projectId;
                 const project = this.projectsController.getProjectById(projectId);
                 this.modalProjectTitle.value = project.title;
                 this.projectForm.dataset.actionType = 'edit';
